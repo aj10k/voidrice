@@ -12,3 +12,17 @@ pp  ${XDG_PICTURES_DIR:-$HOME/Pictures}
 sc  $HOME/.local/bin
 src $HOME/.local/src
 vv  ${XDG_VIDEOS_DIR:-$HOME/Videos}
+
+
+lpp $HOME/.local/bin/lpp
+
+pp $HOME/0Fork/Alon5/0-Projects/
+pck $HOME/0Fork/Alon5/0-Projects/bigCheese/ck
+pfit $HOME/0Fork/Alon5/0-Projects/bigCheese/fit
+pg $HOME/0Fork/Alon5/0-Projects/bigCheese/g
+pk $HOME/0Fork/Alon5/0-Projects/bigCheese/k
+
+psci $HOME/0Fork/Alon5/0-Projects/smallerProjects/sci
+
+lit $HOME/0Fork/Alon5/lit/
+wg $HOME/0Fork/Alon5/wg/
