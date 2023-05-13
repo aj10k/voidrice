@@ -1,0 +1,3 @@
+#!/bin/sh
+
+mpv /home/aj/mu --shuffle --no-audio-display

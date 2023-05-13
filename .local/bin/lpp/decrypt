@@ -1,0 +1,10 @@
+
+#make the folder 0Fork
+
+#to open hdd - make it based on an id like boot mounting not a sd letter
+	sudo cryptsetup luksOpen /dev/sdb1 sdb1
+	sudo mount /dev/mapper/sdb1 /home/aj/0Fork
+	setbg
+
+#	sudo umount /dev/mapper/sdb1
+#	sudo cryptsetup luksClose sdb1
