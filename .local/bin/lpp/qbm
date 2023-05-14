@@ -1,0 +1,10 @@
+
+#!/bin/sh
+#quick bookmark manager
+
+url=$(grep -v '^#' ~/.local/share/larbs/snippets | dmenu -i -l 50 | cut -d' ' -f1)
+xdotool type "$url"
+
+xdotool key Return
+
+sleep 1
