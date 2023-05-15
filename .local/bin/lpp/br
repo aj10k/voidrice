@@ -1,0 +1,69 @@
+#!/bin/sh
+
+#br: Brightness and Redshift
+#for oled support
+#run with sudo
+
+max=$(cat /sys/class/backlight/intel_backlight/max_brightness)
+bright=$((max - max/6))
+min=0
+
+
+screen=$(printf "brightest\\nbright\\ndark\\ndarker\\ndarkerer\\ndarkest\\nblack\\ncustom" | dmenu -i -p "Brightness and Redshift")
+declare -i prnt=1
+
+
+case $screen in
+	"brightest")
+		declare -i red=6500
+		declare -i brightness=$max
+		;;
+	"bright")
+		declare -i red=6500
+		declare -i brightness=$((max - max/6))
+		;;
+	"dark")
+		declare -i red=3300
+		declare -i brightness=$((max/2))
+		;;
+	"darker")
+		declare -i red=3000
+		declare -i brightness=$((max/3))
+		;;
+
+	"darkerer")
+		declare -i red=2600
+		declare -i brightness=$((max/4))
+		;;
+	"darkest")
+		declare -i red=1900
+		declare -i brightness=$((max/6))
+		;;
+	"black")
+		declare -i red=6500
+		declare -i brightness=$min
+		;;
+	"custom")
+		echo -n "suggested range[1500-6500] | input redshift "
+		read red
+		echo -n "suggested range["$((max/6))"-"$max"] | input bright "
+		read brightness
+		;;
+
+	*)
+		echo -n $help
+		prnt=0
+		;;
+esac
+
+
+
+if [[ prnt -gt 0 ]]
+then
+
+redshift -x
+redshift -O $red
+sudo echo $brightness > /sys/class/backlight/intel_backlight/brightness
+
+echo "set $screen | redshift $red | brightness $brightness"
+fi
