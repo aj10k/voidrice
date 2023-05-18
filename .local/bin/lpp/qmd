@@ -1,0 +1,79 @@
+#!/bin/sh
+#quick music downloader
+
+#change notify: show input and displayed its video title, grep from yt-dlp also show input
+
+#make a log file that shows input name/url - output music file name - type of download
+
+
+#dont think log file works
+
+
+usage="$(basename "$0") [-h] [-f n] [-s n] -- Quick Music Downloader
+download music via youtube from different input methods
+
+where:
+    -h  show this help text
+    -f	read from file [file location]
+    	(one entry per line, accepts urls and names)
+    -s	takes song title [song title]
+no option:
+	takes url from clipboard (if valid) or
+	takes song title from clipboard
+
+log file: qmd.log"
+
+
+while getopts ':hf:s:' option; do
+  case "$option" in
+    h) echo "$usage"
+       exit
+       ;;
+    f)
+	filename="$OPTARG"
+	while read line; do
+	# reading each line
+
+	if echo "$line" | grep '.*https://www.youtube.com/.*' >/dev/null ; then
+	yt-dlp --add-metadata -xic -f bestaudio/best "ytsearch: $line akira the don"
+	else
+	yt-dlp --add-metadata -xic -f bestaudio/best "ytsearch:$line akira the don"
+	fi
+
+	done < $filename
+	notify-send "Music Download via - $filename"
+       ;;
+    s)
+	input="$OPTARG"
+	yt-dlp --add-metadata -xic -f bestaudio/best "ytsearch:$input audio"
+	notify-send "Music Download via cmd arg - song title: $input"
+       ;;
+    :) printf "missing argument for -%s\n" "$OPTARG" >&2
+       echo "$usage" >&2
+       exit 1
+       ;;
+   \?) printf "illegal option: -%s\n" "$OPTARG" >&2
+       echo "$usage" >&2
+       exit 1
+       ;;
+  esac
+done
+
+shift "$((OPTIND - 1))"
+
+
+
+if (( $OPTIND == 1 )); then
+	cboard=$(xclip -o)
+	if echo "$cboard" | grep '.*https://www.youtube.com/.*' >/dev/null ; then
+	link=$cboard
+	output=$(yt-dlp --add-metadata -xic -f bestaudio/best "$link")
+	notify-send "Music Download via clipboard - url: $link"
+	echo $link >> qmd.log
+	#grep -o '"[^"]\+"' >> qmd.log
+	else
+	input=$cboard
+	yt-dlp --add-metadata -xic -f bestaudio/best "ytsearch:$input audio"
+	notify-send "Music Download via clipboard - song title: $input"
+	fi
+fi
