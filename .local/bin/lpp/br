@@ -5,11 +5,15 @@
 #run with sudo
 
 max=$(cat /sys/class/backlight/intel_backlight/max_brightness)
-bright=$((max - max/6))
 min=0
 
+if [ -n "$1" ]; then
+	screen=$1
+else
+	screen=$(printf "brightest\\nbright\\ndark\\ndarker\\ndarkerer\\ndarkest\\nblack\\ncustom" | dmenu -i -p "Brightness and Redshift")
+fi
 
-screen=$(printf "brightest\\nbright\\ndark\\ndarker\\ndarkerer\\ndarkest\\nblack\\ncustom" | dmenu -i -p "Brightness and Redshift")
+
 declare -i prnt=1
 
 
