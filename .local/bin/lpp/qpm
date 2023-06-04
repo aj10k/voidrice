@@ -1,0 +1,71 @@
+#!/bin/sh
+
+### bookmark manager ###################
+	#make the dmenu display just the title variables seen below
+
+
+select=$(grep -v '^#' ~/.local/share/larbs/snippets.csv | dmenu -i -l 50)
+url=$( echo $select | cut -d',' -f1)
+
+xdotool type "$url"
+xdotool key Return
+
+
+### password manager ###################
+	# make a continious copy and paste with notifications for personal info
+
+if echo "$select" | grep -q ","
+then
+
+
+subtitle_1="un"
+subtitle_2="pw"
+
+
+title=$(echo "$url" | awk -F/ '{print $3}' | awk '{gsub(/online|login|com|www1|www|my|secure|auth0|configure|.io|bank|ca|\./, ""); print}')
+
+
+
+tab_pre=$( echo $select | cut -d',' -f2)
+tab_between=$( echo $select | cut -d',' -f3)
+#echo $tab_pre
+#echo $tab_between
+
+
+
+
+
+if [ "$title" = "bmo" ] || [ "$title" = "eq" ] || [ "$title" = "questrade" ] || [ "$title" = "simplii" ]; then
+	title="bank/$title"
+fi
+	#echo "title: " $title
+
+
+
+sleep 0.2
+
+#notify-send "pre: $tab_pre"
+#notify-send "between: $tab_between"
+
+want_pw=$(printf "Yes\\nNo" | dmenu -i -p "Want Password?")
+	if [ "$want_pw" = "Yes" ]; then
+
+
+for ((i=1; i<=$tab_pre; i++)); do xdotool key Tab; done
+	username=$(pass "$title"/"$subtitle_1")
+	xdotool type $username
+	#echo "username: " $username
+
+for ((i=1; i<=$tab_between; i++)); do xdotool key Tab; done
+	password=$(pass "$title"/"$subtitle_2")
+	xdotool type $password
+	#xdotool key Return
+	#echo "password: " $password
+
+
+fi
+fi
+
+
+
+sleep 1
