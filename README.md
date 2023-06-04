@@ -1,9 +1,10 @@
-# The Voidrice (Luke Smith <https://lukesmith.xyz>'s dotfiles)
+# Voidrice
 
-These are the dotfiles deployed by [LARBS](https://larbs.xyz) and as seen on
-[my YouTube channel](https://youtube.com/c/lukesmithxyz).
+aj10k's fork of [Luke Smith](http://lukesmith.xyz)'s [dotfiles](https://github.com/lukesmithxyz/voidrice).
 
-- Very useful scripts are in `~/.local/bin/`
+These are the dotfiles deployed by my fork of [LARBS](https://github.com/aj10k/LARBS)
+
+- My scripts are in `~/.local/bin/lpp`
 - Settings for:
 	- vim/nvim (text editor)
 	- zsh (shell)
@@ -23,23 +24,13 @@ These are the dotfiles deployed by [LARBS](https://larbs.xyz) and as seen on
 
 These dotfiles are intended to go with numerous suckless programs I use:
 
-- [dwm](https://github.com/lukesmithxyz/dwm) (window manager)
-- [dwmblocks](https://github.com/lukesmithxyz/dwmblocks) (statusbar)
-- [st](https://github.com/lukesmithxyz/st) (terminal emulator)
-
-I also recommend trying out
-[mutt-wizard](https://github.com/lukesmithxyz/mutt-wizard), which additionally
-works with this setup. It gives you an easy-to-install terminal-based email
-client regardless of your email provider. It is integrated into these dotfiles
-as well.
+- [dwm](https://github.com/aj10k/dwm) (window manager)
+- [dwmblocks](https://github.com/aj10k/dwmblocks) (statusbar)
+- [st](https://github.com/aj10k/st) (terminal emulator)
 
 ## Install these dotfiles and all dependencies
 
-Use [LARBS](https://larbs.xyz) to autoinstall everything:
-
-```
-curl -LO larbs.xyz/larbs.sh
-```
+Use [LARBS](https://github.com/aj10k/LARBS) to autoinstall everything
 
 or clone the repo files directly to your home directory and install the
 [dependencies](https://github.com/LukeSmithxyz/LARBS/blob/master/static/progs.csv).
