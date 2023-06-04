@@ -1,7 +1,9 @@
 #!/bin/sh
 
+#credit: Luke Smith
+
 bookmark=$(xclip -o)
-file="$HOME/.local/share/larbs/snippets"
+file="$HOME/.local/share/larbs/snippets.csv"
 
 
 if grep -q "^$bookmark$" "$file"; then

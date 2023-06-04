@@ -5,6 +5,10 @@ aj10k's fork of [Luke Smith](http://lukesmith.xyz)'s [dotfiles](https://github.c
 These are the dotfiles deployed by my fork of [LARBS](https://github.com/aj10k/LARBS)
 
 - My scripts are in `~/.local/bin/lpp`
+	- br: Brightness Redshift
+	- qmd: Quick Music Downloader
+	- qpm: Quick Password Manager (also bookmarks)
+	- rsserr: rss link fetcher
 - Settings for:
 	- vim/nvim (text editor)
 	- zsh (shell)
