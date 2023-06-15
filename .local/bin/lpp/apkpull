@@ -1,0 +1,15 @@
+#!/bin/sh
+
+
+select=$(adb shell pm list packages | fzf)
+select=$(echo "$select" | sed 's/package://')
+name=$(echo "$select" | sed 's/com.//')
+
+
+
+path=$(adb shell pm path "$select")
+path=$(echo "$path" | sed 's/package://')
+
+
+#adb pull $path /$HOME/tornadoDroid/"$name".apk
+adb pull $path /$PWD/
