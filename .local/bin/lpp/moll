@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Function to display dmenu and prompt for shutdown time
+prompt_shutdown_time() {
+    shutdown_time=$(echo | dmenu -p "Enter the time (in HH:MM format) when you want to shut down: ")
+    echo "$shutdown_time"
+}
+
+# Function to display notification using notify-send
+send_notification() {
+    message=$1
+    notify-send "Shutdown Script" "$message"
+}
+
+# Prompt the user for the desired shutdown time
+shutdown_time=$(prompt_shutdown_time)
+
+# Get the current date and time
+current_date=$(date +%Y-%m-%d)
+current_time=$(date +%H:%M)
+
+# Combine the current date and desired shutdown time
+shutdown_datetime="$current_date $shutdown_time"
+
+# Check if the shutdown time has already passed today
+if [[ $(date -d "$shutdown_datetime" +%s) -lt $(date -d "$current_date $current_time" +%s) ]]; then
+  # Set the shutdown time for the next day
+  next_day=$(date -d "$current_date +1 day" +%Y-%m-%d)
+  shutdown_datetime="$next_day $shutdown_time"
+fi
+
+# Calculate the time difference in seconds
+time_diff=$(($(date -d "$shutdown_datetime" +%s) - $(date -d "$current_date $current_time" +%s)))
+
+# Validate the input and schedule the shutdown
+if [ $time_diff -gt 0 ]; then
+  send_notification "Shutdown scheduled for $shutdown_datetime."
+  sleep $time_diff && sudo loginctl poweroff
+else
+  send_notification "Invalid input or specified time has already passed."
+fi
