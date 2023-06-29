@@ -67,13 +67,13 @@ if (( $OPTIND == 1 )); then
 	cboard=$(xclip -o)
 	if echo "$cboard" | grep '.*https://www.youtube.com/.*' >/dev/null ; then
 	link=$cboard
-	output=$(yt-dlp --add-metadata -xic -f bestaudio/best "$link")
+	output=$(yt-dlp -S ext:m4a --embed-thumbnail -f bestaudio -x "$link")
 	notify-send "Music Download via clipboard - url: $link"
 	echo $link >> qmd.log
 	#grep -o '"[^"]\+"' >> qmd.log
 	else
 	input=$cboard
-	yt-dlp --add-metadata -xic -f bestaudio/best "ytsearch:$input audio"
+	yt-dlp -S ext:m4a --embed-thumbnail -f bestaudio -x "ytsearch:$input audio"
 	notify-send "Music Download via clipboard - song title: $input"
 	fi
 fi
