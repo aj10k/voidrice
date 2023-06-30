@@ -1,14 +1,16 @@
 #!/bin/sh
 
-#credit: Luke Smith
-
-bookmark=$(xclip -o)
+input=$(xclip -o)
 file="$HOME/.local/share/larbs/snippets.csv"
 
 
-if grep -q "^$bookmark$" "$file"; then
-	notify-send "Already bookmarked"
+if echo "$input" | grep -q "https*://\S\+\.[A-Za-z]\+\S*" ; then
+	if grep -q "^$bookmark$" "$file"; then
+		notify-send "Already bookmarked"
+	else
+		notify-send "Bookmark added: $input"
+		echo "$input" >> "$file"
+	fi
 else
-	notify-send "Bookmark added: $bookmark"
-	echo "$bookmark" >> "$file"
+	notify-send "That doesn't look like a full URL: $input" && exit 1
 fi

@@ -1,0 +1,81 @@
+#!/bin/bash
+
+
+
+#set a time to turn off network, and one to power down pc
+
+
+
+# Function to display dmenu and prompt for time
+prompt_time() {
+    time_type=$1
+    time=$(echo | dmenu -p "Enter the $time_type time (in HH:MM format): ")
+    echo "$time"
+}
+
+# Function to display notification using notify-send
+send_notification() {
+    message=$1
+    notify-send "Scheduler Script" "$message"
+}
+
+# Function to calculate the time difference in seconds
+calculate_time_diff() {
+    target_datetime=$1
+    current_datetime=$(date +"%Y-%m-%d %H:%M:%S")
+    time_diff=$(($(date -d "$target_datetime" +%s) - $(date -d "$current_datetime" +%s)))
+    echo "$time_diff"
+}
+
+# Prompt the user for the desired network disconnect time
+disconnect_time=$(prompt_time "network disconnect")
+echo "disconnect: $link" >> $HOME/focus.log
+
+# Prompt the user for the desired shutdown time
+shutdown_time=$(prompt_time "system shutdown")
+echo "shutdown: $link" >> $HOME/focus.log
+
+# Get the current date
+current_date=$(date +%Y-%m-%d)
+
+# Combine the current date and desired disconnect time
+disconnect_datetime="$current_date $disconnect_time"
+
+# Combine the current date and desired shutdown time
+shutdown_datetime="$current_date $shutdown_time"
+
+# Check if the disconnect time has already passed today
+if [[ $(date -d "$disconnect_datetime" +%s) -lt $(date +%s) ]]; then
+  # Set the disconnect time for the next day
+  next_day=$(date -d "$current_date +1 day" +%Y-%m-%d)
+  disconnect_datetime="$next_day $disconnect_time"
+fi
+
+# Check if the shutdown time has already passed today
+if [[ $(date -d "$shutdown_datetime" +%s) -lt $(date +%s) ]]; then
+  # Set the shutdown time for the next day
+  next_day=$(date -d "$current_date +1 day" +%Y-%m-%d)
+  shutdown_datetime="$next_day $shutdown_time"
+fi
+
+# Calculate the time difference for network disconnect
+disconnect_time_diff=$(calculate_time_diff "$disconnect_datetime")
+
+# Validate the input and schedule the network disconnect
+if [ $disconnect_time_diff -gt 0 ]; then
+  send_notification "Network disconnect scheduled for $disconnect_datetime."
+  sleep "$disconnect_time_diff" && nmcli networking off && sudo br darker
+else
+  send_notification "Invalid input or specified time has already passed."
+fi
+
+# Calculate the time difference for shutdown
+shutdown_time_diff=$(calculate_time_diff "$shutdown_datetime")
+
+# Validate the input and schedule the shutdown
+if [ $shutdown_time_diff -gt 0 ]; then
+  send_notification "Shutdown scheduled for $shutdown_datetime."
+  sleep "$shutdown_time_diff" && nmcli networking on && sudo loginctl poweroff
+else
+  send_notification "Invalid input or specified time has already passed."
+fi
