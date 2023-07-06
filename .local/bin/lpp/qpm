@@ -13,6 +13,19 @@ xdotool key Return
 
 ### password manager ###################
 	# make a continious copy and paste with notifications for personal info
+	# make sites like yt and amazon automaticaly in the search bar with tabs (will need to chanage how needed pw detected as it uses ,)
+
+
+if echo "$select" | grep -q "#yt"
+then
+sleep 0.6
+xdotool key Tab
+xdotool key Tab
+xdotool key Tab
+fi
+
+
+
 
 if echo "$select" | grep -q ","
 then
@@ -42,7 +55,7 @@ fi
 
 
 
-sleep 0.2
+sleep 0.4
 
 #notify-send "pre: $tab_pre"
 #notify-send "between: $tab_between"
