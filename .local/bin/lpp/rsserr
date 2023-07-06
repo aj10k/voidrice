@@ -1,26 +1,21 @@
 #!/bin/sh
 
-
-# add twitter, substack support, with titles
-#have basic xml have a title
-
-
-#get it working with ytlocal urls, dont curl the local url, just have it curl the og link
-
-#a youtube search option, that has it, search youtube for channels, then select first few links, send to dmenu, user selects right one
+#todo
+	#substack support, with titles
+	#have basic xml have a title
 
 
 
 cboard=$(xclip -o)
-if echo "$cboard" | grep -q "https*://\S\+\.[A-Za-z]\+\S*" ; then
-	url="$cboard"
-else
-	url="$(grep -Eom1 '<[^>]+(rel="self"|application/[a-z]+\+xml)[^>]+>' "$1" |
-		grep -o "https?://[^\" ]")"
+	if echo "$cboard" | grep -q "https*://\S\+\.[A-Za-z]\+\S*" ; then
+		url="$cboard"
+	else
+		url="$(grep -Eom1 '<[^>]+(rel="self"|application/[a-z]+\+xml)[^>]+>' "$1" |
+			grep -o "https?://[^\" ]")"
 
-	echo "$url" | grep -q "https*://\S\+\.[A-Za-z]\+\S*" ||
-		notify-send "That doesn't look like a full URL." && exit 1
-fi
+		echo "$url" | grep -q "https*://\S\+\.[A-Za-z]\+\S*" ||
+			notify-send "That doesn't look like a full URL." && exit 1
+	fi
 
 
 
@@ -34,7 +29,6 @@ then
 link=$url
 
 #temp solution
-linkname=$link
 fi
 
 
@@ -47,8 +41,9 @@ id=$(echo "$page" | grep -oP "(?<=channelId\" content=\")[^\"]+")
 link="https://www.youtube.com/feeds/videos.xml?channel_id=$id"
 
 name=$(echo "$page" | grep -oP "(?<=\"name\": \")[^\"]+")
-linkname="$link \"~$name\""
+link="$link \"~$name\""
 fi
+
 
 
 
@@ -60,7 +55,7 @@ link="https://www.youtube.com/feeds/videos.xml?channel_id=$id"
 
 page=$(curl $url)
 name=$(echo "$page" | grep -oP "(?<=\"name\": \")[^\"]+")
-linkname="$link \"~$name\""
+link="$link \"~$name\""
 fi
 
 
@@ -68,30 +63,16 @@ fi
 
 
 
-# Piped channel id
-#if echo "$url" | grep 'https://piped.kavin.rocks/channel/.*' >/dev/null ;
-#then
-#id="${url//"https://piped.kavin.rocks/channel/"/}"
-#link="https://www.youtube.com/feeds/videos.xml?channel_id=$id"
-
-#page=$(curl "https://www.youtube.com/channel/$id")
-#name=$(echo "$page" | grep -oP "(?<=\"name\": \")[^\"]+")
-#linkname="$link \"~$name\""
-#fi
-
-
-
-#notify-send "===$link==="
-
-
-
-
 #checks if link is already in rssfile, if not it adds it to file
 
-RSSFILE="${XDG_CONFIG_HOME:-$HOME/.config}/newsboat/urls"
+#RSSFILE="${XDG_CONFIG_HOME:-$HOME/.config}/newsboat/urls"
+
+
+RSSFILE="$HOME/private/newsboat/urls"
 if awk '{print $1}' "$RSSFILE" | grep "^$link$" >/dev/null; then
 	notify-send "You already have this RSS feed."
 else
 	#echo "$link" >> "$RSSFILE" && notify-send "RSS feed added."
-	echo "$linkname" >> "$RSSFILE" && notify-send "RSS feed added with name: $name"
+	echo "$link" >> "$RSSFILE" && notify-send "RSS feed added with name: $name"
+
 fi

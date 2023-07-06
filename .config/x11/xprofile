@@ -20,14 +20,32 @@ done >/dev/null 2>&1
 #xrandr --output eDP-1 --mode 1920x1080
 
 
-#xrandr --setprovideroutputsource modesetting NVIDIA-0
-#xrandr --auto
+xrandr --setprovideroutputsource modesetting NVIDIA-0
+xrandr --auto
 
 
+xrandr --output HDMI-0 --primary --mode 1920x1080 --pos 0x0 --rotate normal --output DP-0 --off --output DP-1 --off --output eDP-1-1 --mode 1920x1080 --pos 1920x0 --rotate normal --output DP-1-1 --off --output HDMI-1-1 --off
 
-#xrandr --output HDMI-0 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output DP-0 --off --output DP-1 --off --output eDP-1-1 --mode 1920x1080 --pos 0x0 --rotate normal --output DP-1-1 --off --output HDMI-1-1 --off
 
 setbg
+
+
+
+day=$(date +%A)
+if [ "$day" = "Sunday" ]; then
+	nmcli networking off
+else
+	nmcli networking on
+fi
+
+
+
+
+
+
+
+
+
 
 ### fix audio
 
