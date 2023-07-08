@@ -64,7 +64,7 @@ disconnect_time_diff=$(calculate_time_diff "$disconnect_datetime")
 # Validate the input and schedule the network disconnect
 if [ $disconnect_time_diff -gt 0 ]; then
   send_notification "Network disconnect scheduled for $disconnect_datetime."
-  sleep "$disconnect_time_diff" && nmcli networking off && sudo br darker
+  sleep "$disconnect_time_diff" && nmcli networking off && sudo br darkerer
 else
   send_notification "Invalid input or specified time has already passed."
 fi
