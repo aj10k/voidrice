@@ -27,52 +27,31 @@ cboard=$(xclip -o)
 if echo "$url" | grep '.*http.*xml' >/dev/null ;
 then
 link=$url
-
-#temp solution
 fi
 
 
 
-# YouTube vanity
-if echo "$url" | grep '.*https://www.youtube.com/@.*' >/dev/null ;
+#/@/
+#/c/
+#/channel/
+if echo "$url" | grep '.*https://www.youtube.com/.*' >/dev/null ;
 then
 page=$(curl $url)
-id=$(echo "$page" | grep -oP "(?<=channelId\" content=\")[^\"]+")
-link="https://www.youtube.com/feeds/videos.xml?channel_id=$id"
-
+id=$(echo "$page" | grep -oP "(?<=title=\"RSS\" href=\")[^\"]+")
+#title="RSS" href="https://www.youtube.com
 name=$(echo "$page" | grep -oP "(?<=\"name\": \")[^\"]+")
-link="$link \"~$name\""
+link="$id \"~$name\""
 fi
 
 
 
-
-# YouTube channel id
-if echo "$url" | grep '.*https://www.youtube.com/channel/.*' >/dev/null ;
-then
-id="${url//"https://www.youtube.com/channel/"/}"
-link="https://www.youtube.com/feeds/videos.xml?channel_id=$id"
-
-page=$(curl $url)
-name=$(echo "$page" | grep -oP "(?<=\"name\": \")[^\"]+")
-link="$link \"~$name\""
-fi
-
-
-
-
-
-
-#checks if link is already in rssfile, if not it adds it to file
-
-#RSSFILE="${XDG_CONFIG_HOME:-$HOME/.config}/newsboat/urls"
 
 
 RSSFILE="$HOME/private/newsboat/urls"
-if awk '{print $1}' "$RSSFILE" | grep "^$link$" >/dev/null; then
-	notify-send "You already have this RSS feed."
-else
+#if awk "$link" "$RSSFILE" | grep "^$link$" >/dev/null; then
+#	notify-send "You already have this RSS feed."
+#else
 	#echo "$link" >> "$RSSFILE" && notify-send "RSS feed added."
-	echo "$link" >> "$RSSFILE" && notify-send "RSS feed added with name: $name"
+	echo "$link" >> "$RSSFILE" && notify-send "RSS feed added with name: $name and link $link"
 
-fi
+#fi
