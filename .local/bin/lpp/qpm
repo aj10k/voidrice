@@ -4,7 +4,7 @@
 	#make the dmenu display just the title variables seen below
 
 
-select=$(grep -v '^#' ~/.local/share/larbs/snippets.csv | dmenu -i -l 50)
+select=$(grep -v '^#' ~/.zprivate/snippets.csv | dmenu -i -l 50)
 url=$( echo $select | cut -d',' -f1)
 
 xdotool type "$url"
