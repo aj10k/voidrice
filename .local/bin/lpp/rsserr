@@ -31,6 +31,20 @@ fi
 
 
 
+
+# Substack
+if echo "$url" | grep '.*substack.com.*' >/dev/null ;
+then
+link="$url""feed"
+echo $link
+fi
+
+
+
+
+
+
+# YOUTUBE
 #/@/
 #/c/
 #/channel/
@@ -47,7 +61,7 @@ fi
 
 
 
-RSSFILE="$HOME/private/newsboat/urls"
+RSSFILE="$HOME/.zprivate/newsboat/urls"
 #if awk "$link" "$RSSFILE" | grep "^$link$" >/dev/null; then
 #	notify-send "You already have this RSS feed."
 #else
