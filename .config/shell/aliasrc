@@ -21,6 +21,7 @@ se() {
 # Verbosity and settings that you pretty much just always are going to want.
 alias \
 	cp="cp -iv" \
+	cphdd="rsync -ah --info=progress2" \
 	mv="mv -iv" \
 	rm="rm -vI" \
 	bc="bc -ql" \
