@@ -61,7 +61,7 @@ fi
 
 
 
-RSSFILE="$HOME/.zprivate/newsboat/urls"
+RSSFILE="$HOME/.zprivate/neoboat/urls"
 #if awk "$link" "$RSSFILE" | grep "^$link$" >/dev/null; then
 #	notify-send "You already have this RSS feed."
 #else
