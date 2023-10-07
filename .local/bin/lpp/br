@@ -27,11 +27,11 @@ case $screen in
 		declare -i brightness=$((max - max/6))
 		;;
 	"dark")
-		declare -i red=3300
+		declare -i red=3000
 		declare -i brightness=$((max/2))
 		;;
 	"darker")
-		declare -i red=3000
+		declare -i red=2600
 		declare -i brightness=$((max/3))
 		;;
 
@@ -68,6 +68,7 @@ then
 redshift -x
 redshift -O $red
 sudo echo $brightness > /sys/class/backlight/intel_backlight/brightness
+#sudo echo 3300 > /sys/class/backlight/intel_backlight/brightness
 
 echo "set $screen | redshift $red | brightness $brightness"
 fi

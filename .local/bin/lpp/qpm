@@ -18,7 +18,7 @@ xdotool key Return
 
 if echo "$select" | grep -q "#yt"
 then
-sleep 0.6
+sleep 0.8
 xdotool key Tab
 xdotool key Tab
 xdotool key Tab

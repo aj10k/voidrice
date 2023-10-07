@@ -77,3 +77,5 @@ if (( $OPTIND == 1 )); then
 	notify-send "Music Download via clipboard - song title: $input"
 	fi
 fi
+
+#yt --skip-download --write-thumbnail --add-metadata

@@ -1,11 +1,5 @@
 #!/bin/bash
 
-
-
-#set a time to turn off network, and one to power down pc
-
-
-
 # Function to display dmenu and prompt for time
 prompt_time() {
     time_type=$1
@@ -75,7 +69,7 @@ shutdown_time_diff=$(calculate_time_diff "$shutdown_datetime")
 # Validate the input and schedule the shutdown
 if [ $shutdown_time_diff -gt 0 ]; then
   send_notification "Shutdown scheduled for $shutdown_datetime."
-  sleep "$shutdown_time_diff" && nmcli networking on && sudo loginctl poweroff
+  sleep "$shutdown_time_diff" && sudo loginctl poweroff
 else
   send_notification "Invalid input or specified time has already passed."
 fi
