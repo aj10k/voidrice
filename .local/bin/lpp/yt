@@ -71,7 +71,7 @@ if (( $OPTIND == 1 )); then
 	#grep -o '"[^"]\+"' >> qmd.log
 	else
 	input=$cboard
-	yt-dlp --embed-metadata -i --write-sub "ytsearch:$input audio"
+	yt-dlp --embed-metadata -i --write-sub "ytsearch:$input"
 	notify-send "Music Download via clipboard - song title: $input"
 	fi
 fi
