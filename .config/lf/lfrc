@@ -61,14 +61,36 @@ cmd extract ${{
 	[ $ans = "y" ] && aunpack $fx
 }}
 
+#cmd delete ${{
+#	clear; tput cup $(($(tput lines)/3)); tput bold
+#	set -f
+#	printf "%s\n\t" "$fx"
+#	printf "delete?[y/N]"
+#	read ans
+#	[ $ans = "y" ] && rm -rf -- $fx
+#}}
+
+
 cmd delete ${{
 	clear; tput cup $(($(tput lines)/3)); tput bold
 	set -f
 	printf "%s\n\t" "$fx"
-	printf "delete?[y/N]"
+	printf "trash?[y/N]"
 	read ans
-	[ $ans = "y" ] && rm -rf -- $fx
+	if [ $ans = "y" ]
+	then
+		dest="${XDG_HOME:-$HOME}/.trash/" &&
+		for x in $fx; do
+			eval mv -iv \"$x\" \"$dest\"
+		done &&
+		notify-send "  File(s) trashed." "File(s) moved to $dest."
+	fi
 }}
+
+
+
+
+
 
 cmd moveto ${{
 	clear; tput cup $(($(tput lines)/3)); tput bold
@@ -93,27 +115,7 @@ cmd copyto ${{
 }}
 
 cmd setbg "$1"
-
-cmd bulkrename ${{
-    tmpfile_old="$(mktemp)"
-    tmpfile_new="$(mktemp)"
-
-    [ -n "$fs" ] && fs=$(basename -a $fs) || fs=$(ls)
-
-    echo "$fs" > "$tmpfile_old"
-    echo "$fs" > "$tmpfile_new"
-    $EDITOR "$tmpfile_new"
-
-    [ "$(wc -l < "$tmpfile_old")" -eq "$(wc -l < "$tmpfile_new")" ] || { rm -f "$tmpfile_old" "$tmpfile_new"; exit 1; }
-
-    paste "$tmpfile_old" "$tmpfile_new" | while IFS="$(printf '\t')" read -r src dst
-    do
-        [ "$src" = "$dst" ] || [ -e "$dst" ] || mv -- "$src" "$dst"
-    done
-
-    rm -f "$tmpfile_old" "$tmpfile_new"
-    lf -remote "send $id unselect"
-}}
+cmd bulkrename $vidir
 
 # Bindings
 map <c-f> $lf -remote "send $id select \"$(fzf)\""
@@ -133,11 +135,11 @@ map X !$f
 map o &mimeopen "$f"
 map O $mimeopen --ask "$f"
 
-map A :rename; cmd-end # at the very end
+map A rename # at the very end
 map c push A<c-u> # new rename
-map I :rename; cmd-home # at the very beginning
-map i :rename # before extension
-map a :rename; cmd-right # after extension
+map I push A<c-a> # at the very beginning
+map i push A<a-b><a-b><a-f> # before extension
+map a push A<a-b> # after extension
 map B bulkrename
 map b $setbg $f
 
