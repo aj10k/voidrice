@@ -1,0 +1,57 @@
+#!/bin/sh
+
+#Simple OLED Brightness
+#made with chatGPT with a bit of human
+
+#write a shell script called SOB, that takes a flag of either -i for incease or -d for decease, followed by a number that represents precentage. The script calls a max variable from max=$(cat /sys/class/backlight/intel_backlight/max_brightness), and has a min=0. The script will echo the max +/- the percentage. If the user calls for a brightness below the min, set brightness to the min.
+
+
+# Define the maximum brightness file and minimum brightness
+max_file="/sys/class/backlight/intel_backlight/max_brightness"
+current_file="/sys/class/backlight/intel_backlight/brightness"
+min=0
+
+# Check if the required argument is provided
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 [-i or -d] <percentage>"
+    exit 1
+fi
+
+# Check if the first argument is either -i or -d
+if [ "$1" != "-i" ] && [ "$1" != "-d" ]; then
+    echo "Invalid flag. Use -i for increase or -d for decrease."
+    exit 1
+fi
+
+# Check if the second argument is a valid number
+if ! [[ "$2" =~ ^[0-9]+$ ]]; then
+    echo "Invalid percentage. Please provide a positive integer."
+    exit 1
+fi
+
+# Read the maximum brightness from the file
+max=$(cat "$max_file")
+current=$(cat "$current_file")
+
+# Calculate the new brightness level
+if [ "$1" == "-i" ]; then
+    # Increase brightness
+    new_brightness=$((max * $2 / 100 + current))
+else
+    # Decrease brightness
+    new_brightness=$((current - max * $2 / 100))
+fi
+
+# Ensure that the new brightness level is within the valid range
+if [ "$new_brightness" -lt "$min" ]; then
+    new_brightness=$min
+fi
+
+if [ "$new_brightness" -gt "$max" ]; then
+    new_brightness=$max
+fi
+
+# Write the new brightness level to the brightness file
+echo "$new_brightness" > /sys/class/backlight/intel_backlight/brightness
+
+echo "Brightness set to $new_brightness out of $max"
