@@ -18,6 +18,13 @@ se() {
 	[ -f "$HOME/.local/bin/$choice" ] && $EDITOR "$HOME/.local/bin/$choice"
 	;}
 
+
+
+ff265to264() {
+    ffmpeg -i "$1" -c:v libx264 -crf 23 -c:a aac -strict experimental "$2"
+}
+
+
 # Verbosity and settings that you pretty much just always are going to want.
 alias \
 	cp="cp -iv" \
@@ -27,10 +34,13 @@ alias \
 	bc="bc -ql" \
 	rsync="rsync -vrPlu" \
 	mkd="mkdir -pv" \
-	#yt="yt-dlp --embed-metadata -i" \
-	yta="yt -x -f bestaudio/best" \
+	ytq="yt-dlp --embed-metadata -i --write-sub" \
 	ytt="yt --skip-download --write-thumbnail" \
-	ffmpeg="ffmpeg -hide_banner"
+	ytd="yt --skip-download --write-thumbnail --add-metadata" \
+	ffmpeg="ffmpeg -hide_banner" \
+	yta="yt -x -f bestaudio/best"
+
+
 
 # Colorize commands when possible.
 alias \
