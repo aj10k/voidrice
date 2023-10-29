@@ -1,6 +1,11 @@
 #!/bin/sh
 #quick music downloader
 
+
+# https://www.youtube.com/watch?v=
+
+
+
 #change notify: show input and displayed its video title, grep from yt-dlp also show input
 
 #make a log file that shows input name/url - output music file name - type of download
@@ -35,9 +40,10 @@ while getopts ':hf:s:' option; do
 	# reading each line
 
 	if echo "$line" | grep '.*https://www.youtube.com/.*' >/dev/null ; then
-	yt-dlp --add-metadata -xic -f bestaudio/best "ytsearch: $line akira the don"
+	yt-dlp -S ext:m4a --embed-thumbnail --add-metadata -f bestaudio -x "$link"
 	else
-	yt-dlp --add-metadata -xic -f bestaudio/best "ytsearch:$line akira the don"
+	#yt-dlp --embed-thumbnail -xic -f bestaudio/best "ytsearch:$line audio remaster"
+	yt-dlp --embed-thumbnail -xic -f bestaudio/best "ytsearch:$line Akria the Don"
 	fi
 
 	done < $filename
@@ -65,15 +71,23 @@ shift "$((OPTIND - 1))"
 
 if (( $OPTIND == 1 )); then
 	cboard=$(xclip -o)
-	if echo "$cboard" | grep '.*https://www.youtube.com/.*' >/dev/null ; then
+	if echo "$cboard" | grep '.*youtube.com/.*' >/dev/null ; then
 	link=$cboard
-	output=$(yt-dlp -S ext:m4a --embed-thumbnail -f bestaudio -x "$link")
+	#output=$(yt-dlp -S ext:m4a --embed-thumbnail -f bestaudio -x "$link")
+	#yt-dlp -S ext:m4a --embed-thumbnail -f bestaudio -x "$link"
+	#yt-dlp -S ext:m4a --embed-thumbnail --add-metadata -f bestaudio -x "$link"
+
+	yt-dlp --embed-thumbnail -f bestaudio/best -x "$link"
+	#yt-dlp --embed-thumbnail --add-metadata -f bestaudio/best -x "$link"
+
 	notify-send "Music Download via clipboard - url: $link"
 	echo $link >> qmd.log
 	#grep -o '"[^"]\+"' >> qmd.log
 	else
 	input=$cboard
-	yt-dlp -S ext:m4a --embed-thumbnail -f bestaudio -x "ytsearch:$input audio"
+	yt-dlp --embed-thumbnail -f bestaudio/best -x "ytsearch:$input audio remaster"
+	#yt-dlp --embed-thumbnail -f bestaudio/best  -x "ytsearch:$input Akria the Don"
+
 	notify-send "Music Download via clipboard - song title: $input"
 	fi
 fi
