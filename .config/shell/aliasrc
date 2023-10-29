@@ -21,8 +21,16 @@ se() {
 
 
 ff265to264() {
-    ffmpeg -i "$1" -c:v libx264 -crf 23 -c:a aac -strict experimental "$2"
+	ffmpeg -i "$1" -c:v libx264 -crf 23 -c:a aac -strict experimental "$2"
 }
+
+
+cropaudio() {
+	ffmpeg -i "$1" -ss "$2" -to "$3" -c copy "output_$1"
+}
+
+
+
 
 
 # Verbosity and settings that you pretty much just always are going to want.
