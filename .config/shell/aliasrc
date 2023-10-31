@@ -23,11 +23,16 @@ se() {
 ff265to264() {
 	ffmpeg -i "$1" -c:v libx264 -crf 23 -c:a aac -strict experimental "$2"
 }
-
-
-cropaudio() {
+ffcropaudio() {
 	ffmpeg -i "$1" -ss "$2" -to "$3" -c copy "output_$1"
 }
+ffcropvideo_middle(){
+	ffmpeg -i "$1" -ss "$2" -to "$3" -c:v copy -c:a copy "output_$1"
+}
+ffcropvideo_end(){
+	ffmpeg -i "$1" -ss "$2" -c:v copy -c:a copy "output_$1"
+}
+#00:01:30
 
 
 
