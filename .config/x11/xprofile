@@ -31,20 +31,19 @@ setbg
 
 
 
-day=$(date +%A)
-if [ "$day" = "Sunday" ]; then
-	nmcli networking off
-else
+#day=$(date +%A)
+#if [ "$day" = "Sunday" ]; then
+	#nmcli networking off
+#else
 	nmcli networking on
-fi
+#fi
 
 
 
 
+pass git push
 
-
-
-
+nohup focus2 > /dev/null 2>&1&
 
 
 ### fix audio
