@@ -1,0 +1,6 @@
+#!/bin/bash
+
+sudo br brightest
+loginctl poweroff 20:59
+sunwait wait set 40.730610N -84.935242E
+sudo br darker
