@@ -7,14 +7,15 @@
 
 
 
-usage="$(basename "$0") [-h] [-f n] [-s n] -- Quick Music Downloader
+usage="$(basename "$0") [-h] [-f n] [-s n] -- (quick) yt (downloader)
 download music via youtube from different input methods
 
 where:
-    -h  show this help text
-    -f	read from file [file location]
-    	(one entry per line, accepts urls and names)
-    -s	takes song title [song title]
+	-h	show this help text
+    	-f	read from file [file location]
+    		(one entry per line, accepts urls and names)
+	-c	read from file (channels) and date
+    	-s	takes song title [song title]
 no option:
 	takes url from clipboard (if valid) or
 	takes song title from clipboard
@@ -22,29 +23,44 @@ no option:
 log file: qmd.log"
 
 
-while getopts ':hf:s:' option; do
+while getopts ':hf:c:s:' option; do
   case "$option" in
     h) echo "$usage"
        exit
        ;;
     f)
 	filename="$OPTARG"
+	HERE=$(pwd)
 	while read line; do
 	# reading each line
 
 	if echo "$line" | grep '.*https://www.youtube.com/.*' >/dev/null ; then
-	yt-dlp --embed-metadata -i --write-sub "ytsearch: $line akira the don"
+	output_path="$HERE/%(uploader)s/%(title)s%(ext)s"
+	yt-dlp --embed-thumbnail --embed-metadata -i -o "$output_path" "$line"
 	else
-	yt-dlp --embed-metadata -i --write-sub "ytsearch:$line akira the don"
+	yt-dlp --embed-thumbnail --embed-metadata -i --write-sub "ytsearch:$line"
 	fi
 
 	done < $filename
-	notify-send "Music Download via - $filename"
+	notify-send "Videos Download via - $filename"
+       ;;
+    c)
+	filename="$OPTARG"
+	HERE=$(pwd)
+	start_date=$(date -d "$(date -d 'today' +'%Y%m%d') - 67 days" +'%Y%m%d')
+
+	while read line; do
+	# reading each line
+	output_path="$HERE/%(uploader)s/%(title)s%(ext)s"
+	yt-dlp --break-on-reject --embed-thumbnail --dateafter "$start_date" -o "$output_path" "$line"
+
+	done < $filename
+	notify-send "Channels Download via - $filename"
        ;;
     s)
 	input="$OPTARG"
 	yt-dlp --embed-metadata -i --write-sub "ytsearch:$input"
-	notify-send "Music Download via cmd arg - song title: $input"
+	notify-send "Videos Download via cmd arg - title: $input"
        ;;
     :) printf "missing argument for -%s\n" "$OPTARG" >&2
        echo "$usage" >&2
@@ -66,13 +82,13 @@ if (( $OPTIND == 1 )); then
 	if echo "$cboard" | grep '.*https://www.youtube.com/.*' >/dev/null ; then
 	link=$cboard
 	output=$(yt-dlp --embed-metadata -i --write-sub "$link")
-	notify-send "Music Download via clipboard - url: $link"
+	notify-send "YT Download via clipboard - url: $link"
 	echo $link >> qmd.log
 	#grep -o '"[^"]\+"' >> qmd.log
 	else
 	input=$cboard
 	yt-dlp --embed-metadata -i --write-sub "ytsearch:$input"
-	notify-send "Music Download via clipboard - song title: $input"
+	notify-send "YT Download via clipboard - vid title: $input"
 	fi
 fi
 
