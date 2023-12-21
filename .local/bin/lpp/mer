@@ -1,3 +1,4 @@
 #!/bin/sh
 
-mpv /home/aj/stuff/mu/nn/0Music\ ALL\ and\ NewPipe\ May\ 2021 --shuffle --no-audio-display
+here=$(pwd)
+mpv --shuffle --no-audio-display --playlist=$here
