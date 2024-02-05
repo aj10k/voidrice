@@ -1,0 +1,11 @@
+#!/bin/sh
+
+nfcdir="/home/aj/0ForkAlon6/0-nfc/"
+
+message=$(ls notarealdirABCABC | dmenu -i)
+
+file=$(find "$nfcdir" -maxdepth 1 -type f | dmenu -i -l 30)
+
+category=$(grep '^"===' $file | tr -d '="' | dmenu -i -l 30)
+
+sed -i "/$category/ a $message" $file
