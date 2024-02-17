@@ -71,7 +71,6 @@ on_boot() {
 
 ### Main Script #######################
 
+sudo mount -t cifs -o credentials=/home/aj/.zprivate/.smbpassword,iocharset=utf8,uid=$(id -u),gid=$(id -g),forceuid,forcegid, //192.168.68.52/data /media/data
 
 on_boot
-
-#sudo mount -t cifs -o credentials=/home/aj/.zprivate/.smbpassword,iocharset=utf8,uid=$(id -u),gid=$(id -g),forceuid,forcegid, //192.168.68.52/data /media/data
