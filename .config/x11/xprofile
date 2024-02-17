@@ -43,7 +43,7 @@ setbg
 
 pass git push
 
-nohup focus2 > /dev/null 2>&1&
+nohup focus-sleep > /dev/null 2>&1&
 
 
 ### fix audio
