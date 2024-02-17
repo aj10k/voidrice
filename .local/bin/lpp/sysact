@@ -1,4 +1,6 @@
 #!/bin/sh
+#credit: lukesmith.xyz
+
 
 # A dmenu wrapper script for system functions.
 export WM="dwm"
@@ -13,7 +15,11 @@ wmpid(){ # This function is needed if there are multiple instances of the window
 	echo "${tree%%)*}"
 }
 
-case "$(printf "🔒 lock\n🚪 leave $WM\n♻️ renew $WM\n🐻 hibernate\n🔃 reboot\n🖥️shutdown\n💤 sleep\n📺 display off" | dmenu -i -p 'Action: ')" in
+case "$(printf "🖥️shutdown in x time\n🔒 lock\n🚪 leave $WM\n♻️ renew $WM\n🐻 hibernate\n🔃 reboot\n🖥️shutdown\n💤 sleep\n📺 display off" | dmenu -i -p 'Action: ')" in
+	'🖥️shutdown in x time')
+		delay=$(printf "5\\n15\\n30\\n45\\n60\n90" | dmenu -i -p "Time (minutes)")
+		sleep "$delay"m && $ctl poweroff -i
+		;;
 	'🔒 lock') slock ;;
 	"🚪 leave $WM") kill -TERM "$(wmpid)" ;;
 	"♻️ renew $WM") kill -HUP "$(wmpid)" ;;
