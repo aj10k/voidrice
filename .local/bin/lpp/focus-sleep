@@ -1,0 +1,77 @@
+#!/bin/sh
+
+
+### Variables #######################
+shutdown_time="22:59"
+file="$HOME/focus.log"
+location="40.730610N -84.935242E"
+
+boot_time="$(date +%H:%M)"
+#boot_time="10:00"
+sunrise_time="$(sunwait list rise $location)"
+sunset_time="$(sunwait list set $location)"
+
+
+### Functions #######################
+new_day () {
+	current_date=$(date +"%A %b %d, %Y")
+	echo -e "\n$current_date" >> "$file"
+
+}
+
+
+is_day_in_file() {
+current_date=$(date +"%A %b %d, %Y")
+if ! grep -q "$current_date" "$file" ; then
+	new_day
+fi
+}
+
+
+start_day() {
+	echo "day"
+while true
+do
+		sudo br brightest
+		is_day_in_file
+	sunwait wait set $location
+		sudo br darker
+	sunwait wait rise $location
+done
+}
+
+
+start_night() {
+	echo "night"
+while true
+do
+		sudo br darker
+	sunwait wait rise $location
+		sudo br brightest
+		is_day_in_file
+	sunwait wait set $location
+done
+}
+
+
+on_boot() {
+	is_day_in_file
+
+	loginctl poweroff $shutdown_time
+	echo -e "\tLogin time: $boot_time --- Expected shutdown time: $shutdown_time" >> "$file"
+
+	if [[ "$boot_time" < "$sunset_time" ]] && [[ "$boot_time" > "$sunrise_time" ]]; then
+		start_day
+	fi
+	if [[ "$boot_time" > "$sunset_time" ]] || [[ "$boot_time" < "$sunrise_time" ]]; then
+		start_night
+	fi
+}
+
+
+### Main Script #######################
+
+
+on_boot
+
+#sudo mount -t cifs -o credentials=/home/aj/.zprivate/.smbpassword,iocharset=utf8,uid=$(id -u),gid=$(id -g),forceuid,forcegid, //192.168.68.52/data /media/data
