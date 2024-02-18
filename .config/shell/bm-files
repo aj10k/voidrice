@@ -21,3 +21,10 @@ cfmc	${XDG_CONFIG_HOME:-$HOME/.config}/ncmpcpp/config	# ncmpcpp (music player) c
 cfl	${XDG_CONFIG_HOME:-$HOME/.config}/lf/lfrc		# lf (file browser) config
 cfL	${XDG_CONFIG_HOME:-$HOME/.config}/lf/scope		# lf's scope/preview file
 cfX	${XDG_CONFIG_HOME:-$HOME/.config}/sxiv/exec/key-handler	# sxiv (image viewer) key/script handler
+
+
+###########
+
+
+mi $HOME/0ForkAlon6/0-cal/0MicroCal
+ma $HOME/0ForkAlon6/0-cal/1MacroCal

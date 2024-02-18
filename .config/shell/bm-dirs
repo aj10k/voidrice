@@ -14,15 +14,32 @@ src $HOME/.local/src
 vv  ${XDG_VIDEOS_DIR:-$HOME/Videos}
 
 
+#dotfiles
 lpp $HOME/.local/bin/lpp
 
-pp $HOME/0Fork/Alon5/0-Projects/
-pck $HOME/0Fork/Alon5/0-Projects/bigCheese/ck
-pfit $HOME/0Fork/Alon5/0-Projects/bigCheese/fit
-pg $HOME/0Fork/Alon5/0-Projects/bigCheese/g
-pk $HOME/0Fork/Alon5/0-Projects/bigCheese/k
+#0-cal
 
-psci $HOME/0Fork/Alon5/0-Projects/smallerProjects/sci
+#0-nfc
+nfc $HOME/0ForkAlon6/0-nfc
 
-lit $HOME/0Fork/Alon5/lit/
-#wg $HOME/0Fork/Alon5/wg/
+#1-Finding Adam
+
+#1-Projects
+pp $HOME/0ForkAlon6/1-Projects/
+
+pck $HOME/0ForkAlon6/1-Projects/bigger/ck
+pfit $HOME/0ForkAlon6/1-Projects/bigger/fit
+pg $HOME/0ForkAlon6/1-Projects/bigger/g
+pk $HOME/0ForkAlon6/1-Projects/bigger/k
+
+#2-media
+gene $HOME/0ForkAlon6/2-media/cons00m/genes
+lit $HOME/0ForkAlon6/2-media/cons00m/lit
+mu $HOME/0ForkAlon6/2-media/cons00m/mu
+nas $HOME/0ForkAlon6/2-media/cons00m/NAS
+
+
+#################
+
+
+#psci $HOME/0Fork/Alon5/0-Projects/smallerProjects/sci
