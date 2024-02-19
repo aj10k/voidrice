@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 ### Variables #######################
 shutdown_time="22:59"
 file="$HOME/focus.log"
@@ -12,18 +11,76 @@ sunrise_time="$(sunwait list rise $location)"
 sunset_time="$(sunwait list set $location)"
 
 
+
+case "$(readlink -f /sbin/init)" in
+	*systemd*) ctl='systemctl' ;;
+	*) ctl='loginctl' ;;
+esac
+
+
+
+### cli #######################
+
+usage="$(basename "$0") [-h] [-c] -- Focus-Sleep
+properly manage; br (brightness + redshift) script, system shutdown
+
+where:
+    -h  show this help text
+    -d	delay shutdown
+no option:
+	for running on boot
+log file: focus.log"
+
+
+
+while getopts ':hd' option; do
+  case "$option" in
+    h) echo "$usage"
+       exit
+       ;;
+    d)
+	$ctl poweroff -c
+
+	#Reason for delay
+	tmpfile=$(mktemp /tmp/abcfocus-sleep.XXXXXX)
+	st -e nvim $tmpfile #does this close?
+
+	#time delay
+	delay=$(printf "5\\n15\\n30\\n45\\n59" | dmenu -i -p "Time (minutes)")
+
+	#output to focus.log
+	delay_reason="Shutdown delay: "$delay"min --- Reason: $(cat $tmpfile)"
+	printf "\t$delay_reason" >> $file
+
+	#do shutdown
+	sleep "$delay"m && $ctl poweroff -i
+
+       ;;
+    :) printf "missing argument for -%s\n" "$OPTARG" >&2
+       echo "$usage" >&2
+       exit 1
+       ;;
+   \?) printf "illegal option: -%s\n" "$OPTARG" >&2
+       echo "$usage" >&2
+       exit 1
+       ;;
+  esac
+done
+
+
+shift "$((OPTIND - 1))"
+
+
+
+
 ### Functions #######################
-new_day () {
-	current_date=$(date +"%A %b %d, %Y")
-	echo -e "\n$current_date" >> "$file"
-
-}
-
 
 is_day_in_file() {
 current_date=$(date +"%A %b %d, %Y")
 if ! grep -q "$current_date" "$file" ; then
-	new_day
+	#prev new_day
+	current_date=$(date +"%A %b %d, %Y")
+	echo -e "\n$current_date" >> "$file"
 fi
 }
 
@@ -55,9 +112,14 @@ done
 
 
 on_boot() {
+sudo mount -t cifs -o credentials=/home/aj/.zprivate/.smbpassword,iocharset=utf8,uid=$(id -u),gid=$(id -g),forceuid,forcegid, //192.168.68.52/data /media/data
+
+sudo mount -t cifs -o credentials=/home/aj/.zprivate/.smbpassword,iocharset=utf8,uid=$(id -u),gid=$(id -g),forceuid,forcegid, //192.168.68.52/HomerStuff /media/NAS
+
+
 	is_day_in_file
 
-	loginctl poweroff $shutdown_time
+	$ctl poweroff $shutdown_time
 	echo -e "\tLogin time: $boot_time --- Expected shutdown time: $shutdown_time" >> "$file"
 
 	if [[ "$boot_time" < "$sunset_time" ]] && [[ "$boot_time" > "$sunrise_time" ]]; then
@@ -71,6 +133,7 @@ on_boot() {
 
 ### Main Script #######################
 
-sudo mount -t cifs -o credentials=/home/aj/.zprivate/.smbpassword,iocharset=utf8,uid=$(id -u),gid=$(id -g),forceuid,forcegid, //192.168.68.52/data /media/data
 
-on_boot
+if (( $OPTIND == 1 )); then
+	on_boot
+fi
