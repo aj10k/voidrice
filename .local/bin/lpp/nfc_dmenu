@@ -2,7 +2,7 @@
 
 ### variables ###################
 
-nfcdir="/home/aj/0ForkAlon6/0-nfc/"
+nfc_dir="/home/aj/0ForkAlon6/0-nfc/"
 
 #################################
 
@@ -16,18 +16,22 @@ sed -i '1 i\---' $tmpfile
 sed -i '1 i\ ' $tmpfile
 
 message=$(cat $tmpfile)
-rm "$tmpfile"
 
 
 #what file
-file=$(find "$nfcdir" -maxdepth 1 -type f | dmenu -i -l 30)
+file=$(find "$nfc_dir" -maxdepth 2 -type f | rev | cut -d"/" -f1 | rev | sort | dmenu -i -l 30)
 
 
-#categoies?
-if grep -q '^"===' $file
-then
-	category=$(grep '^"===' $file | tr -d '="' | dmenu -i -l 30)
-	sed -i "/$category/ a $message" $file
-else
-	printf "$message" >> $file
-fi
+#ensure file exists
+while [ ! -f "$nfc_dir$file" ]
+do
+	notify-send "$nfc_dir$file does not exist."
+	sleep 1
+	file=$(find "$nfc_dir" -maxdepth 2 -type f | rev | cut -d"/" -f1 | rev | sort | dmenu -i -l 30)
+done
+	printf "$message" >> "$nfc_dir$file"
+
+
+rm "$tmpfile"
+
+notify-send "$file $message"
