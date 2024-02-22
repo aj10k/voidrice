@@ -38,6 +38,9 @@ lit $HOME/0ForkAlon6/2-media/cons00m/lit
 mu $HOME/0ForkAlon6/2-media/cons00m/mu
 nas $HOME/0ForkAlon6/2-media/cons00m/NAS
 
+rp $HOME/0ForkAlon6/2-media/cons00m/genes/Z_notNAS/reactionPics/
+mwg $HOME/0ForkAlon6/2-media/cons00m/genes/Z_notNAS/wg/
+
 
 #################
 
