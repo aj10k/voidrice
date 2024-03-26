@@ -42,8 +42,9 @@ while getopts ':hf:s:' option; do
 	if echo "$line" | grep '.*https://www.youtube.com/.*' >/dev/null ; then
 	yt-dlp -S ext:m4a --embed-thumbnail --add-metadata -f bestaudio -x "$link"
 	else
-	#yt-dlp --embed-thumbnail -xic -f bestaudio/best "ytsearch:$line audio remaster"
-	yt-dlp --embed-thumbnail -xic -f bestaudio/best "ytsearch:$line Akria the Don"
+	yt-dlp --embed-thumbnail -xic -f bestaudio/best "ytsearch:$line audio remaster"
+	#yt-dlp --embed-thumbnail -xic -f bestaudio/best "ytsearch:$line Akria the Don"
+	echo $line >> qmd_file.log
 	fi
 
 	done < $filename
@@ -51,7 +52,7 @@ while getopts ':hf:s:' option; do
        ;;
     s)
 	input="$OPTARG"
-	yt-dlp --add-metadata -xic -f bestaudio/best "ytsearch:$input audio"
+	yt-dlp --embed-thumbnail -xic -f bestaudio/best "ytsearch:$input audio"
 	notify-send "Music Download via cmd arg - song title: $input"
        ;;
     :) printf "missing argument for -%s\n" "$OPTARG" >&2
@@ -77,8 +78,8 @@ if (( $OPTIND == 1 )); then
 	#yt-dlp -S ext:m4a --embed-thumbnail -f bestaudio -x "$link"
 	#yt-dlp -S ext:m4a --embed-thumbnail --add-metadata -f bestaudio -x "$link"
 
-	yt-dlp --embed-thumbnail -f bestaudio/best -x "$link"
-	#yt-dlp --embed-thumbnail --add-metadata -f bestaudio/best -x "$link"
+	#yt-dlp --embed-thumbnail -f bestaudio/best -x "$link"
+	yt-dlp --embed-thumbnail --add-metadata -f bestaudio/best -x "$link"
 
 	notify-send "Music Download via clipboard - url: $link"
 	echo $link >> qmd.log
