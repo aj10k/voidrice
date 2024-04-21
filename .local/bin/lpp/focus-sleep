@@ -45,7 +45,7 @@ delay() {
 
 newshutdowntime() {
 	# Split hours and minutes
-	IFS=':' read -r hours minutes <<< "$boot_time"
+	IFS=':' read -r hours minutes <<< "$1"
 
 	# Convert hours and minutes to total minutes
 	shutdown_total_minutes=$((hours * 60 + minutes))
@@ -59,7 +59,7 @@ newshutdowntime() {
 
 	# Format the new shutdown time
 	delayed_shutdown_time=$(printf "%02d:%02d" "$new_hours" "$new_minutes")
-
+	echo -e "\tExpected shutdown time: $delayed_shutdown_time" >> "$file" #real night
 }
 
 is_day_in_file() {
@@ -115,8 +115,7 @@ sudo mount -t cifs -o credentials=/home/aj/.zprivate/.smbpassword,iocharset=utf8
 	if [[ "$boot_time" > "$sunset_time" ]] || [[ "$boot_time" < "$sunrise_time" ]]; then
 		echo -e "\tNight Login time: $boot_time ---" >> "$file"
 		delay
-		newshutdowntime
-		echo -e "\tExpected shutdown time: $delayed_shutdown_time" >> "$file" #real night
+		newshutdowntime "$boot_time"
 		start_night
 	fi
 }
@@ -145,6 +144,9 @@ while getopts ':hd' option; do
        ;;
     d)
 	delay
+	current_time=$(date "+%H:%M")
+	newshutdowntime "$current_time"
+	#newshutdowntime "$shutdown_time"
        ;;
     :) printf "missing argument for -%s\n" "$OPTARG" >&2
        echo "$usage" >&2
