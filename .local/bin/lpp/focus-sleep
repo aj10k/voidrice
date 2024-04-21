@@ -1,5 +1,8 @@
 #!/bin/sh
 
+#loginctl poweroff -c
+
+
 ### Variables #######################
 shutdown_time="22:59"
 file="$HOME/focus.log"
@@ -18,27 +21,10 @@ case "$(readlink -f /sbin/init)" in
 esac
 
 
-
-### cli #######################
-
-usage="$(basename "$0") [-h] [-c] -- Focus-Sleep
-properly manage; br (brightness + redshift) script, system shutdown
-
-where:
-    -h  show this help text
-    -d	delay shutdown
-no option:
-	for running on boot
-log file: focus.log"
+### Functions #######################
 
 
-
-while getopts ':hd' option; do
-  case "$option" in
-    h) echo "$usage"
-       exit
-       ;;
-    d)
+delay() {
 	$ctl poweroff -c
 
 	#Reason for delay
@@ -49,31 +35,32 @@ while getopts ':hd' option; do
 	delay=$(printf "5\\n15\\n30\\n45\\n59" | dmenu -i -p "Time (minutes)")
 
 	#output to focus.log
-	delay_reason="Shutdown delay: "$delay"min --- Reason: $(cat $tmpfile)"
+	delay_reason="        Shutdown delay: "$delay"min --- Reason: $(cat $tmpfile)"
 	printf "\t$delay_reason" >> $file
 
 	#do shutdown
-	sleep "$delay"m && $ctl poweroff -i
+	sleep "$delay"m && $ctl poweroff -i &
 
-       ;;
-    :) printf "missing argument for -%s\n" "$OPTARG" >&2
-       echo "$usage" >&2
-       exit 1
-       ;;
-   \?) printf "illegal option: -%s\n" "$OPTARG" >&2
-       echo "$usage" >&2
-       exit 1
-       ;;
-  esac
-done
+}
 
+newshutdowntime() {
+	# Split hours and minutes
+	IFS=':' read -r hours minutes <<< "$boot_time"
 
-shift "$((OPTIND - 1))"
+	# Convert hours and minutes to total minutes
+	shutdown_total_minutes=$((hours * 60 + minutes))
 
+	# Add the delay in minutes
+	delayed_shutdown_total_minutes=$((shutdown_total_minutes + delay))
 
+	# Convert total minutes back to hours and minutes
+	new_hours=$((delayed_shutdown_total_minutes / 60))
+	new_minutes=$((delayed_shutdown_total_minutes % 60))
 
+	# Format the new shutdown time
+	delayed_shutdown_time=$(printf "%02d:%02d" "$new_hours" "$new_minutes")
 
-### Functions #######################
+}
 
 is_day_in_file() {
 current_date=$(date +"%A %b %d, %Y")
@@ -120,15 +107,59 @@ sudo mount -t cifs -o credentials=/home/aj/.zprivate/.smbpassword,iocharset=utf8
 	is_day_in_file
 
 	$ctl poweroff $shutdown_time
-	echo -e "\tLogin time: $boot_time --- Expected shutdown time: $shutdown_time" >> "$file"
 
 	if [[ "$boot_time" < "$sunset_time" ]] && [[ "$boot_time" > "$sunrise_time" ]]; then
+		echo -e "\tLogin time: $boot_time --- Expected shutdown time: $shutdown_time" >> "$file" #the real day
 		start_day
 	fi
 	if [[ "$boot_time" > "$sunset_time" ]] || [[ "$boot_time" < "$sunrise_time" ]]; then
+		echo -e "\tNight Login time: $boot_time ---" >> "$file"
+		delay
+		newshutdowntime
+		echo -e "\tExpected shutdown time: $delayed_shutdown_time" >> "$file" #real night
 		start_night
 	fi
 }
+
+
+
+
+### cli #######################
+
+usage="$(basename "$0") [-h] [-c] -- Focus-Sleep
+properly manage; br (brightness + redshift) script, system shutdown
+
+where:
+    -h  show this help text
+    -d	delay shutdown
+no option:
+	for running on boot
+log file: focus.log"
+
+
+
+while getopts ':hd' option; do
+  case "$option" in
+    h) echo "$usage"
+       exit
+       ;;
+    d)
+	delay
+       ;;
+    :) printf "missing argument for -%s\n" "$OPTARG" >&2
+       echo "$usage" >&2
+       exit 1
+       ;;
+   \?) printf "illegal option: -%s\n" "$OPTARG" >&2
+       echo "$usage" >&2
+       exit 1
+       ;;
+  esac
+done
+
+
+shift "$((OPTIND - 1))"
+
 
 
 ### Main Script #######################
