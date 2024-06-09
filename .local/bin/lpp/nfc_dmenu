@@ -19,17 +19,14 @@ message=$(cat $tmpfile)
 
 
 #what file
-#file=$(find "$nfc_dir" -maxdepth 2 -type f | rev | cut -d"/" -f1 | rev | sort | dmenu -i -l 30)
-#file=$(find "$nfc_dir" -maxdepth 2 -type f | sed 's/\/home\/aj\/0ForkAlon6\/0-nfc\///g' | sort | dmenu -i -l 30)
-file=$(find "$nfc_dir" -maxdepth 2 -type f | sed 's/\/home\/aj\/-neoNFC\///g' | sort | dmenu -i -l 30)
-
+file=$(find "$nfc_dir" -maxdepth 2 -type f | sed "s|$nfc_dir||" | sort | dmenu -i -l 30)
 
 #ensure file exists
 while [ ! -f "$nfc_dir$file" ]
 do
 	notify-send "$nfc_dir$file does not exist."
 	sleep 2
-	file=$(find "$nfc_dir" -maxdepth 2 -type f | sed 's/\/home\/aj\/-neoNFC\///g' | sort | dmenu -i -l 30)
+	file=$(find "$nfc_dir" -maxdepth 2 -type f | sed "s|$nfc_dir||" | sort | dmenu -i -l 30)
 done
 	printf "$message" >> "$nfc_dir$file"
 
